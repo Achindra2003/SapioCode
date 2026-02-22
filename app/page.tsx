@@ -120,7 +120,7 @@ function WorkbenchContent() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
           </button>
-          <button className="text-sm font-bold text-white/60 hover:text-white transition-colors">Sign in</button>
+          <button className="px-5 h-10 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs font-black uppercase tracking-widest transition-all">Sign in</button>
         </div>
       </nav>
 
@@ -233,11 +233,11 @@ function WorkbenchContent() {
             </div>
 
             <div className="flex items-center gap-3">
-              <button onClick={() => setIsAIOpen(true)} className="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 rounded-md transition-all group border border-transparent hover:border-white/5">
+              <button onClick={() => setIsAIOpen(true)} className="flex items-center gap-3 h-10 px-5 bg-white/5 border border-white/5 hover:border-emerald-500/20 hover:bg-emerald-500/5 rounded-lg transition-all group">
                 <div className="w-4 h-4 rounded-sm border border-emerald-500/40 flex items-center justify-center">
                   <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/60 group-hover:bg-emerald-500" />
                 </div>
-                <span className="text-[11px] font-black text-white/40 group-hover:text-white/80 uppercase tracking-widest">SapioBot</span>
+                <span className="text-[11px] font-black text-white/40 group-hover:text-emerald-400 uppercase tracking-widest leading-none">SapioBot</span>
               </button>
               <div className="w-px h-4 bg-white/5 mx-1" />
               <span className="text-[10px] font-bold text-white/10 uppercase tracking-widest tabular-nums">Ln 1, Col 1</span>
