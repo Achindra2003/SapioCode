@@ -1,189 +1,79 @@
-# SapioCode - Learning Operating System
+# SapioCode – Intelligent Coding Playground
 
-A comprehensive EdTech platform that bridges the "Assessment vs. Cognition" gap through collaborative coding, AI-powered Socratic tutoring, and intelligent verification.
+A minimal but powerful single-user coding playground built with **Next.js App Router**, **Monaco Editor**, **JDoodle API**, and **Google Gemini AI**.
 
-## 🚀 Features
+## Features
 
-- **Real-Time Collaborative Code Editor**: Multi-user editing with CRDT-based synchronization (Yjs)
-- **Monaco Editor Integration**: Professional code editor with syntax highlighting
-- **User Presence Awareness**: See who's collaborating in real-time
-- **Modular Architecture**: Designed for future integration with Judge0, AI tutoring, and more
+- 🖊️ **Monaco Editor** — VS Code-quality code editing
+- 🌐 **10 Languages** — Python, Java, C, C++, JavaScript, Go, Ruby, Rust, PHP, Kotlin
+- ▶️ **Run Code** — Execute via JDoodle API with stdin support
+- 🤖 **AI Assistant** — Chat with Gemini AI about your code (explain, debug, optimize)
+- 🎯 **Dynamic Questions** — Teacher-loaded problems with per-language starter code
+- 🌙 **Dark Theme** — Premium glassmorphism design with smooth animations
 
-## 📁 Project Structure
-
-```
-SapioCode-Frontend+Backend/
-├── frontend/                 # React + Vite + TypeScript frontend
-│   ├── src/
-│   │   ├── components/      # Reusable components
-│   │   │   ├── CollaborativeEditor.tsx
-│   │   │   └── UserPresence.tsx
-│   │   ├── pages/           # Page components
-│   │   │   └── WorkspacePage.tsx
-│   │   ├── store/           # Zustand state management
-│   │   │   └── editorStore.ts
-│   │   ├── App.tsx
-│   │   ├── main.tsx
-│   │   └── index.css
-│   ├── package.json
-│   ├── vite.config.ts
-│   └── tailwind.config.js
-│
-└── websocket-server/        # Node.js WebSocket server for Yjs
-    ├── server.js
-    └── package.json
-```
-
-## 🛠️ Tech Stack
-
-### Frontend
-- **React 18** - UI framework
-- **Vite** - Build tool and dev server
-- **TypeScript** - Type safety
-- **Monaco Editor** - Code editor (VS Code engine)
-- **Yjs** - CRDT for collaborative editing
-- **Zustand** - State management
-- **Tailwind CSS** - Styling
-- **React Router** - Navigation
-
-### Backend (WebSocket Server)
-- **Node.js** - Runtime
-- **ws** - WebSocket library
-- **y-websocket** - Yjs WebSocket provider
-
-## 📦 Installation
-
-### Prerequisites
-- Node.js 18+ and npm
-
-### 1. Install Frontend Dependencies
+## Quick Start
 
 ```bash
-cd frontend
+# 1. Install dependencies
 npm install
-```
 
-### 2. Install WebSocket Server Dependencies
+# 2. Set up environment variables
+# Copy .env.local and fill in your API keys:
+#   JDOODLE_CLIENT_ID     — from https://www.jdoodle.com/compiler-api/
+#   JDOODLE_CLIENT_SECRET — from https://www.jdoodle.com/compiler-api/
+#   AI_API_KEY            — from https://aistudio.google.com/apikey
 
-```bash
-cd ../websocket-server
-npm install
-```
-
-## 🚀 Running the Application
-
-### 1. Start the WebSocket Server (Terminal 1)
-
-```bash
-cd websocket-server
-npm start
-```
-
-The server will run on `ws://localhost:1234`
-
-### 2. Start the Frontend Dev Server (Terminal 2)
-
-```bash
-cd frontend
+# 3. Run dev server
 npm run dev
+
+# 4. Open http://localhost:3000
 ```
 
-The frontend will be available at `http://localhost:5173`
+## Dynamic Questions
 
-### 3. Test Collaboration
-
-Open multiple browser windows/tabs at `http://localhost:5173` and start typing in the editor. You'll see changes synchronized in real-time across all instances!
-
-## 🎯 Current Implementation Status
-
-### ✅ Phase 1: Foundation & Collaborative Editor (COMPLETE)
-- [x] Project setup with React + Vite + TypeScript
-- [x] Monaco Editor integration
-- [x] Yjs collaborative editing
-- [x] WebSocket server for synchronization
-- [x] User presence indicators
-- [x] Basic workspace UI layout
-- [x] State management with Zustand
-- [x] Routing with React Router
-
-### 🔄 Future Phases
-- [ ] **Phase 2**: AST parsing, Judge0 integration, Curriculum Navigator
-- [ ] **Phase 3**: Socratic AI tutor, Affective computing
-- [ ] **Phase 4**: Adversarial fuzzing, Viva Voce oral defense
-- [ ] **Phase 5**: Instructor dashboard
-
-## 🏗️ Architecture
-
-### Collaborative Editing Flow
+Load a specific question by adding `?questionId=<id>` to the URL:
 
 ```
-User A Browser ←→ WebSocket Server ←→ User B Browser
-      ↓                  ↓                    ↓
-  Yjs Doc            Yjs Sync             Yjs Doc
-      ↓                                       ↓
-Monaco Editor                          Monaco Editor
+http://localhost:3000?questionId=two-sum
+http://localhost:3000?questionId=fizzbuzz
 ```
 
-### Key Components
+Available questions are in `lib/questions.json`. Add more to expand the question bank.
 
-1. **CollaborativeEditor.tsx**: Integrates Monaco with Yjs for real-time collaboration
-2. **UserPresence.tsx**: Displays connection status and active collaborators
-3. **WorkspacePage.tsx**: Main workspace layout with problem statement and editor
-4. **editorStore.ts**: Zustand store for global editor state
+## Deploy to Vercel
 
-## 🔧 Configuration
-
-### WebSocket URL
-The WebSocket server URL can be configured in `CollaborativeEditor.tsx`:
-
-```typescript
-websocketUrl = 'ws://localhost:1234'  // Default
+```bash
+npm i -g vercel
+vercel
 ```
 
-### Editor Language
-Currently supports Python by default. Can be extended to support:
-- JavaScript/TypeScript
-- C++
-- Java
-- And more...
+Set environment variables in Vercel Dashboard → Settings → Environment Variables.
 
-## 📝 Future Integration Points
+## JDoodle Free Plan Limits
 
-### Judge0 Code Execution
-The architecture is designed to easily integrate Judge0:
-- Add execution service in `src/services/`
-- Connect "Run Code" and "Submit" buttons
-- Display results in the bottom panel
+- 200 credits/day (1 credit = 1 execution)
+- 5-second execution timeout
+- No persistent storage
 
-### AI Tutoring
-Placeholder for right panel AI chat:
-- Will use Groq LLM API
-- AST-based context awareness
-- Socratic questioning prompts
+## Project Structure
 
-### Memory Visualizer
-Bottom panel ready for:
-- Stack frame visualization
-- Heap object tracking
-- Variable state display
-
-## 🤝 Contributing
-
-This is a research project for educational purposes. Future enhancements will include:
-- Academic integrity verification
-- Affective computing integration
-- Curriculum graph navigation
-- Instructor analytics dashboard
-
-## 📄 License
-
-MIT License - See LICENSE file for details
-
-## 🔗 Documentation
-
-- [Product Requirements Document (PRD)](../.gemini/antigravity/brain/1b872de5-f253-4adb-aee7-461b1ce2ebdd/prd.md)
-- [Development TODO List](../.gemini/antigravity/brain/1b872de5-f253-4adb-aee7-461b1ce2ebdd/task.md)
-
----
-
-**Built with ❤️ for better learning outcomes**
+```
+app/
+├── layout.tsx              ← Root layout
+├── page.tsx                ← Main playground
+├── globals.css             ← Tailwind + custom styles
+├── api/
+│   ├── compile/route.ts    ← JDoodle execution
+│   ├── assistant/route.ts  ← AI chat (Gemini)
+│   └── questions/route.ts  ← Question bank
+components/
+├── MonacoEditor.tsx        ← Code editor
+├── OutputConsole.tsx       ← Execution output
+├── AIChatPanel.tsx         ← AI chat panel
+└── LanguageSelector.tsx    ← Language dropdown
+lib/
+├── constants.ts            ← Language map, limits
+├── types.ts                ← TypeScript interfaces
+├── questions.json          ← Question bank
+└── rateLimit.ts            ← Rate limiter
+```
