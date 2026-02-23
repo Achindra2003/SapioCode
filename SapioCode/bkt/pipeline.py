@@ -1,6 +1,9 @@
+from typing import Optional, List, Dict, Any
 from bkt.updater import update_mastery_bkt
 from bkt.affect_fusion import modulate_bkt_params
 from bkt.explainability import explain_bkt_update
+from bkt.config import MASTERY_THRESHOLD, DEFAULT_COGNITIVE_STATE
+from analytics.mastery_history import get_history_store
 
 
 def process_submission_bkt(
@@ -8,22 +11,19 @@ def process_submission_bkt(
     sid: str,
     sub_id: str,
     correct: bool,
-    cognitive_state: dict | None = None
-):
+    cognitive_state: Optional[dict] = None
+) -> List[Dict[str, Any]]:
     """
     Orchestrates BKT updates for one submission.
+    Returns list of mastery updates.
     """
 
-   
     if cognitive_state is None:
-        cognitive_state = {
-            "engagement": 0.7,
-            "frustration": 0.1,
-            "confusion": 0.2,
-            "boredom": 0.0
-        }
+        cognitive_state = dict(DEFAULT_COGNITIVE_STATE)
 
-   
+    updates = []
+    history_store = get_history_store()
+
     results = neo4j_session.run(
         """
         MATCH (s:Student {sid: $sid})-[m:MASTERY]->(c:Concept)
@@ -59,7 +59,6 @@ def process_submission_bkt(
             concept_params=adapted_params
         )
 
-      
         explanation = explain_bkt_update(
             cognitive_state=cognitive_state,
             base_params=base_params,
@@ -71,7 +70,7 @@ def process_submission_bkt(
         print(f"[BKT] Concept: {record['concept']}")
         print("EXPLANATION:", explanation["summary"])
 
- 
+        # Persist to Neo4j
         neo4j_session.run(
             """
             MATCH (s:Student {sid: $sid})-[m:MASTERY]->(c:Concept {name: $concept})
@@ -82,4 +81,25 @@ def process_submission_bkt(
             new_p=new_p
         )
 
-    
+        # Record mastery history snapshot
+        history_store.record(
+            student_id=sid,
+            concept=record["concept"],
+            old_mastery=old_p,
+            new_mastery=new_p,
+            correct=correct,
+            cognitive_state=cognitive_state,
+            explanation=explanation["summary"],
+        )
+
+        # Store update results
+        updates.append({
+            "concept": record["concept"],
+            "old_mastery": old_p,
+            "new_mastery": new_p,
+            "mastery_delta": round(new_p - old_p, 4),
+            "is_mastered": new_p >= MASTERY_THRESHOLD,
+            "explanation": explanation["summary"],
+        })
+
+    return updates
